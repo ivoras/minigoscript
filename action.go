@@ -6,14 +6,14 @@ import (
 
 type ScriptAction struct {
 	Action string
-	args   []ScriptToken
+	Args   []ScriptToken
 }
 
 func (a ScriptAction) String() string {
 	b := strings.Builder{}
 	b.WriteString(a.Action)
 	b.WriteString(" ")
-	for _, arg := range a.args {
+	for _, arg := range a.Args {
 		b.WriteString(arg.String())
 		b.WriteString(" ")
 	}
