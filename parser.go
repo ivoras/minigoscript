@@ -3,6 +3,7 @@ package minigoscript
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -19,9 +20,14 @@ const operatorString = "=+-*/"
 type ScriptParser struct {
 }
 
+var DefaultParser ScriptParser
+
 func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error) {
-	for lineCount, rawLine := range strings.Split(inputStr, " ") {
+	for lineCount, rawLine := range strings.Split(inputStr, "\n") {
 		line := p.gobbleWhiteSpace(rawLine)
+		if len(line) == 0 {
+			continue
+		}
 		l, s := p.gobbleIdentifier(line)
 		if l == 0 {
 			err = fmt.Errorf("%w: Cannot find action in line %d: '%s'", ScriptParserError, lineCount+1, rawLine)
@@ -31,6 +37,7 @@ func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error
 			Action: s,
 			Args:   []ScriptToken{},
 		}
+		line = line[l:]
 
 		for len(line) > 0 {
 			line = p.gobbleWhiteSpace(line)
@@ -63,7 +70,24 @@ func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error
 			}
 
 			l, s = p.gobbleString(line)
+			if l > 0 {
+				action.Args = append(action.Args, NewScriptTokenString(s))
+				line = line[l:]
+				continue
+			} else if l == -1 {
+				err = fmt.Errorf("%w: error parsing string in line %d: '%s'", ScriptParserError, lineCount+1, line)
+				return
+			}
 
+			l, s = p.gobbleOperator(line)
+			if len(s) > 0 {
+				action.Args = append(action.Args, NewScriptTokenOperator(s))
+				line = line[l:]
+				continue
+			}
+
+			err = fmt.Errorf("%w: Unknown token at line %d: '%s'", ScriptParserError, lineCount+1, line)
+			return
 		}
 
 		actions = append(actions, action)
@@ -84,7 +108,7 @@ func (p *ScriptParser) gobbleIdentifier(s string) (int, string) {
 	for i < len(s) && strings.IndexByte(identifierString, byte(s[i])) != -1 {
 		i++
 	}
-	return i, s[i:]
+	return i, s[0:i]
 }
 
 func (p *ScriptParser) gobbleBool(s string) (l int, b bool) {
@@ -102,23 +126,75 @@ func (p *ScriptParser) gobbleBool(s string) (l int, b bool) {
 	return 0, false
 }
 
-func (p *ScriptParser) gobbleNumber(s string) (l int, f float32) {
+func (p *ScriptParser) gobbleNumber(s string) (i int, f float32) {
 	if len(s) == 0 {
 		return 0, 0
 	}
-	i := 0
-	for i < len(s) && strings.IndexByte(numberString, byte(s[i])) != -1 {
+	for i < len(s) && strings.IndexByte(numberString, s[i]) != -1 {
 		i++
 	}
-	num := s[0:i]
-	f64, err := strconv.ParseFloat(num, 32)
+	if i == 0 {
+		return 0, 0
+	}
+	f64, err := strconv.ParseFloat(s[0:i], 32)
 	if err != nil {
+		log.Println("Error parsing number:", s[0:i], err)
 		return -1, 0
 	}
 	f = float32(f64)
 	return
 }
 
-func (p *ScriptParser) gobbleString(s string) (l int, outString string) {
+func (p *ScriptParser) gobbleString(s string) (i int, outString string) {
+	if len(s) == 0 {
+		return 0, ""
+	}
+	q := s[0]
+	if strings.IndexByte(quoteString, q) == -1 {
+		return 0, ""
+	}
+	s = s[1:]
+
+	inEscape := false
+	sb := strings.Builder{}
+
+	for i < len(s) {
+		ch := s[i]
+		if ch == '\\' {
+			inEscape = true
+			i++
+			continue
+		}
+		if inEscape {
+			if ch == q {
+				sb.WriteByte(ch)
+				inEscape = false
+			} else if ch == 'n' {
+				sb.WriteByte('\n')
+				inEscape = false
+			} else if ch == 't' {
+				sb.WriteByte('\t')
+				inEscape = false
+			} else {
+				return -1, ""
+			}
+		}
+		if ch == q {
+			i += 2
+			break
+		}
+		sb.WriteByte(ch)
+		i++
+	}
+
+	outString = sb.String()
 	return
+}
+
+func (p *ScriptParser) gobbleOperator(s string) (int, string) {
+	i := 0
+	for i < len(s) && strings.IndexByte(operatorString, byte(s[i])) != -1 {
+		i++
+	}
+	return i, s[0:i]
 }
