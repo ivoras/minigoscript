@@ -21,6 +21,7 @@ const operatorString = "=+-*/"
 type ScriptParser struct {
 }
 
+// DefaultParser is the default mini script parser. Use it for parsing mini script code.
 var DefaultParser ScriptParser
 
 // Parse accepts a string containing the newline-delimited mini script code, and parses

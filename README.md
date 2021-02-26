@@ -1,5 +1,7 @@
 # A very simple scripting language parser in Go
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/ivoras/minigoscript.svg)](https://pkg.go.dev/github.com/ivoras/minigoscript)
+
 This is an ad-hoc parser for a small scripting language. It's not even a complete language - it only deals with tokenisation and a bit of syntax, you need to provide all the semantics yourself. See the example section below for an idea what this does.
 
 The language looks like this:
