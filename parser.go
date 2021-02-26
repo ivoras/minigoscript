@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// ScriptParserError is the error which is ultimately wrapped in the returned errors.
 var ScriptParserError = errors.New("Error parsing script")
 
 const alphaString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -22,6 +23,8 @@ type ScriptParser struct {
 
 var DefaultParser ScriptParser
 
+// Parse accepts a string containing the newline-delimited mini script code, and parses
+// this code into a slice of `ScriptAction`s.
 func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error) {
 	for lineCount, rawLine := range strings.Split(inputStr, "\n") {
 		line := p.gobbleWhiteSpace(rawLine)
