@@ -43,8 +43,8 @@ func TestParserLang(t *testing.T) {
 
 	for i, a := range actions {
 		if a.Action == "let" {
-			if len(a.Args) < 3 {
-				t.Error("Not enough args in line", i)
+			if len(a.Args) != 3 {
+				t.Error("Expecting exactly 3 arguments for 'let' in line", i)
 				continue
 			}
 			if !a.Args[0].IsIdentifier() {
@@ -67,5 +67,20 @@ func TestParserLang(t *testing.T) {
 			}
 			fmt.Println()
 		}
+	}
+}
+
+func BenchmarkParser(b *testing.B) {
+	source := `
+	let a = 1
+	let b = true
+	let c = 'Hello'
+	print c
+	print "World"
+	print c "World"
+	false
+	`
+	for n := 0; n < b.N; n++ {
+		minigoscript.DefaultParser.Parse(source)
 	}
 }

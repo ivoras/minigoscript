@@ -52,8 +52,8 @@ func TestParserLang(t *testing.T) {
 
 	for i, a := range actions {
 		if a.Action == "let" {
-			if len(a.Args) < 3 {
-				t.Error("Not enough args in line", i)
+			if len(a.Args) != 3 {
+				t.Error("Expecting exactly 3 arguments for 'let' in line", i)
 				continue
 			}
 			if !a.Args[0].IsIdentifier() {
