@@ -20,6 +20,10 @@ type ScriptToken struct {
 	b bool
 }
 
+func (v ScriptToken) IsString() bool {
+	return v.Type == TokenTypeString
+}
+
 func (v ScriptToken) GetString() (s string, err error) {
 	if v.Type == TokenTypeString {
 		s = v.s
@@ -27,6 +31,17 @@ func (v ScriptToken) GetString() (s string, err error) {
 		err = fmt.Errorf("%w: Not a string (%d)", ScriptParserError, v.Type)
 	}
 	return
+}
+
+func (v ScriptToken) MustGetString() (s string) {
+	if v.Type == TokenTypeString {
+		s = v.s
+	}
+	return
+}
+
+func (v ScriptToken) IsIdentifier() bool {
+	return v.Type == TokenTypeIdentifier
 }
 
 func (v ScriptToken) GetIdentifier() (s string, err error) {
@@ -38,6 +53,17 @@ func (v ScriptToken) GetIdentifier() (s string, err error) {
 	return
 }
 
+func (v ScriptToken) MustGetIdentifier() (s string) {
+	if v.Type == TokenTypeIdentifier {
+		s = v.s
+	}
+	return
+}
+
+func (v ScriptToken) IsBool() bool {
+	return v.Type == TokenTypeBool
+}
+
 func (v ScriptToken) GetBool() (b bool, err error) {
 	if v.Type == TokenTypeBool {
 		b = v.b
@@ -45,6 +71,10 @@ func (v ScriptToken) GetBool() (b bool, err error) {
 		err = fmt.Errorf("%w: Not a bool (%d)", ScriptParserError, v.Type)
 	}
 	return
+}
+
+func (v ScriptToken) IsNumber() bool {
+	return v.Type == TokenTypeNumber
 }
 
 func (v ScriptToken) GetNumber() (f float32, err error) {
@@ -56,11 +86,22 @@ func (v ScriptToken) GetNumber() (f float32, err error) {
 	return
 }
 
+func (v ScriptToken) IsOperator() bool {
+	return v.Type == TokenTypeOperator
+}
+
 func (v ScriptToken) GetOperator() (s string, err error) {
 	if v.Type == TokenTypeOperator {
 		s = v.s
 	} else {
 		err = fmt.Errorf("%w: Not an operator (%d)", ScriptParserError, v.Type)
+	}
+	return
+}
+
+func (v ScriptToken) MustGetOperator() (s string) {
+	if v.Type == TokenTypeOperator {
+		s = v.s
 	}
 	return
 }
@@ -83,6 +124,22 @@ func (v ScriptToken) String() string {
 		return fmt.Sprintf("<s %s>", v.s)
 	}
 	return "<unknown>"
+}
+
+func (v ScriptToken) Value() interface{} {
+	switch v.Type {
+	case TokenTypeBool:
+		return v.b
+	case TokenTypeIdentifier:
+		return v.s
+	case TokenTypeNumber:
+		return v.f
+	case TokenTypeOperator:
+		return v.s
+	case TokenTypeString:
+		return v.s
+	}
+	return nil
 }
 
 func NewScriptTokenBool(b bool) ScriptToken {
