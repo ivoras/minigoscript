@@ -14,6 +14,7 @@ func TestParser(t *testing.T) {
 	let c = 'hello'
 	print c
 	true
+	let z = 'O\'really!'
 	`)
 
 	if err != nil {
@@ -79,7 +80,8 @@ func BenchmarkParser(b *testing.B) {
 	print "World"
 	print c "World"
 	false
-	`
+	pi=3.1
+	` // 100 bytes
 	for n := 0; n < b.N; n++ {
 		minigoscript.DefaultParser.Parse(source)
 	}

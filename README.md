@@ -85,3 +85,12 @@ func TestParserLang(t *testing.T) {
 * The design of this parser will not win any awards in efficiency or performance, you really shouldn't use it for anything complex.
 * This same approach is implemented for .Net in C# at https://github.com/ivoras/minidotnetscript
 * This module has no external dependencies
+
+A simple benchmark on an input script of 100 bytes:
+
+```
+cpu: Intel(R) Core(TM) i5-6400 CPU @ 2.70GHz
+BenchmarkParser-4         327212              3295 ns/op
+```
+
+I.e. it takes about 3us to parse that string on this hardware.

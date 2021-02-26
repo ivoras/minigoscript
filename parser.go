@@ -178,6 +178,8 @@ func (p *ScriptParser) gobbleString(s string) (i int, outString string) {
 			} else {
 				return -1, ""
 			}
+			i++
+			continue
 		}
 		if ch == q {
 			i += 2
