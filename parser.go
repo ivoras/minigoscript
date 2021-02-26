@@ -105,7 +105,7 @@ func (p *ScriptParser) gobbleWhiteSpace(s string) string {
 
 func (p *ScriptParser) gobbleIdentifier(s string) (int, string) {
 	i := 0
-	for i < len(s) && strings.IndexByte(identifierString, byte(s[i])) != -1 {
+	for i < len(s) && strings.IndexByte(identifierString, s[i]) != -1 {
 		i++
 	}
 	return i, s[0:i]
@@ -195,7 +195,7 @@ func (p *ScriptParser) gobbleString(s string) (i int, outString string) {
 
 func (p *ScriptParser) gobbleOperator(s string) (int, string) {
 	i := 0
-	for i < len(s) && strings.IndexByte(operatorString, byte(s[i])) != -1 {
+	for i < len(s) && strings.IndexByte(operatorString, s[i]) != -1 {
 		i++
 	}
 	return i, s[0:i]
