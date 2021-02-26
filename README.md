@@ -84,3 +84,4 @@ func TestParserLang(t *testing.T) {
 
 * The design of this parser will not win any awards in efficiency or performance, you really shouldn't use it for anything complex.
 * This same approach is implemented for .Net in C# at https://github.com/ivoras/minidotnetscript
+* This module has no external dependencies

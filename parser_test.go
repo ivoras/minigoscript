@@ -13,6 +13,7 @@ func TestParser(t *testing.T) {
 	let b = true
 	let c = 'hello'
 	print c
+	true
 	`)
 
 	if err != nil {
