@@ -47,14 +47,14 @@ func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error
 
 			l, b := p.gobbleBool(line)
 			if l > 0 {
-				action.Args = append(action.Args, NewScriptTokenBool(b))
+				action.Args = append(action.Args, newScriptTokenBool(b))
 				line = line[l:]
 				continue
 			}
 
 			l, n := p.gobbleNumber(line)
 			if l > 0 {
-				action.Args = append(action.Args, NewScriptTokenNumber(n))
+				action.Args = append(action.Args, newScriptTokenNumber(n))
 				line = line[l:]
 				continue
 			} else if l == -1 {
@@ -64,14 +64,14 @@ func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error
 
 			l, s = p.gobbleIdentifier(line)
 			if l > 0 {
-				action.Args = append(action.Args, NewScriptTokenIdentifier(s))
+				action.Args = append(action.Args, newScriptTokenIdentifier(s))
 				line = line[l:]
 				continue
 			}
 
 			l, s = p.gobbleString(line)
 			if l > 0 {
-				action.Args = append(action.Args, NewScriptTokenString(s))
+				action.Args = append(action.Args, newScriptTokenString(s))
 				line = line[l:]
 				continue
 			} else if l == -1 {
@@ -81,7 +81,7 @@ func (p *ScriptParser) Parse(inputStr string) (actions []ScriptAction, err error
 
 			l, s = p.gobbleOperator(line)
 			if len(s) > 0 {
-				action.Args = append(action.Args, NewScriptTokenOperator(s))
+				action.Args = append(action.Args, newScriptTokenOperator(s))
 				line = line[l:]
 				continue
 			}

@@ -2,6 +2,7 @@ package minigoscript
 
 import "fmt"
 
+// ScriptTokenType is the type identifier for parsed tokens
 type ScriptTokenType int32
 
 const (
@@ -12,6 +13,7 @@ const (
 	TokenTypeOperator
 )
 
+// ScriptToken represents a single token from the parsed script
 type ScriptToken struct {
 	Type ScriptTokenType
 
@@ -20,10 +22,13 @@ type ScriptToken struct {
 	b bool
 }
 
+// IsString returns true if the token is a string
 func (v ScriptToken) IsString() bool {
 	return v.Type == TokenTypeString
 }
 
+// GetString returns the string content of the token, if the token's type is `TokenTypeString`
+// or returns an error.
 func (v ScriptToken) GetString() (s string, err error) {
 	if v.Type == TokenTypeString {
 		s = v.s
@@ -33,6 +38,8 @@ func (v ScriptToken) GetString() (s string, err error) {
 	return
 }
 
+// MustGetString returns the string content of the token, if the token's type is `TokenTypeString`
+// or an empty string otherwise.
 func (v ScriptToken) MustGetString() (s string) {
 	if v.Type == TokenTypeString {
 		s = v.s
@@ -106,6 +113,7 @@ func (v ScriptToken) MustGetOperator() (s string) {
 	return
 }
 
+// String Returns a human-readable representation of the token.
 func (v ScriptToken) String() string {
 	switch v.Type {
 	case TokenTypeBool:
@@ -126,6 +134,7 @@ func (v ScriptToken) String() string {
 	return "<unknown>"
 }
 
+// Value returns the token's value, either a string, float32 or a bool, as an empty interface.
 func (v ScriptToken) Value() interface{} {
 	switch v.Type {
 	case TokenTypeBool:
@@ -142,35 +151,35 @@ func (v ScriptToken) Value() interface{} {
 	return nil
 }
 
-func NewScriptTokenBool(b bool) ScriptToken {
+func newScriptTokenBool(b bool) ScriptToken {
 	return ScriptToken{
 		Type: TokenTypeBool,
 		b:    b,
 	}
 }
 
-func NewScriptTokenIdentifier(s string) ScriptToken {
+func newScriptTokenIdentifier(s string) ScriptToken {
 	return ScriptToken{
 		Type: TokenTypeIdentifier,
 		s:    s,
 	}
 }
 
-func NewScriptTokenNumber(f float32) ScriptToken {
+func newScriptTokenNumber(f float32) ScriptToken {
 	return ScriptToken{
 		Type: TokenTypeNumber,
 		f:    f,
 	}
 }
 
-func NewScriptTokenOperator(s string) ScriptToken {
+func newScriptTokenOperator(s string) ScriptToken {
 	return ScriptToken{
 		Type: TokenTypeOperator,
 		s:    s,
 	}
 }
 
-func NewScriptTokenString(s string) ScriptToken {
+func newScriptTokenString(s string) ScriptToken {
 	return ScriptToken{
 		Type: TokenTypeString,
 		s:    s,
