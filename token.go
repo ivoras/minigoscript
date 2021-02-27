@@ -80,6 +80,13 @@ func (v ScriptToken) GetBool() (b bool, err error) {
 	return
 }
 
+func (v ScriptToken) MustGetBool() bool {
+	if v.Type == TokenTypeBool {
+		return v.b
+	}
+	return false
+}
+
 func (v ScriptToken) IsNumber() bool {
 	return v.Type == TokenTypeNumber
 }
@@ -91,6 +98,13 @@ func (v ScriptToken) GetNumber() (f float32, err error) {
 		err = fmt.Errorf("%w: Not a number (%d)", ScriptParserError, v.Type)
 	}
 	return
+}
+
+func (v ScriptToken) MustGetNumber() float32 {
+	if v.Type == TokenTypeNumber {
+		return v.f
+	}
+	return 0
 }
 
 func (v ScriptToken) IsOperator() bool {
