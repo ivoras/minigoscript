@@ -15,6 +15,7 @@ func TestParser(t *testing.T) {
 	print c
 	true
 	let z = 'O\'really!'
+	let w = -3.14159269
 	`)
 
 	if err != nil {
